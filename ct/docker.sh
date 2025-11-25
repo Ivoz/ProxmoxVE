@@ -34,18 +34,8 @@ function update_script() {
   msg_ok "Base system updated"
 
   msg_info "Updating Docker Engine"
-  $STD apt-get install --only-upgrade -y docker-ce docker-ce-cli containerd.io
+  $STD apt-get install --only-upgrade -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   msg_ok "Docker Engine updated"
-
-  if [[ -f /usr/local/lib/docker/cli-plugins/docker-compose ]]; then
-    COMPOSE_BIN="/usr/local/lib/docker/cli-plugins/docker-compose"
-    COMPOSE_NEW_VERSION=$(get_latest_release "docker/compose")
-    msg_info "Updating Docker Compose to $COMPOSE_NEW_VERSION"
-    curl -fsSL "https://github.com/docker/compose/releases/download/${COMPOSE_NEW_VERSION}/docker-compose-$(uname -s)-$(uname -m)" \
-      -o "$COMPOSE_BIN"
-    chmod +x "$COMPOSE_BIN"
-    msg_ok "Docker Compose updated"
-  fi
 
   if docker ps -a --format '{{.Names}}' | grep -q '^portainer$'; then
     msg_info "Updating Portainer"
